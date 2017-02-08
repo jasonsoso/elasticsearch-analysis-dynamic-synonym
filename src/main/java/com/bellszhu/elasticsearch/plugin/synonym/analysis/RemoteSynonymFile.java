@@ -18,6 +18,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.synonym.SolrSynonymParser;
 import org.apache.lucene.analysis.synonym.SynonymMap;
 import org.apache.lucene.analysis.synonym.WordnetSynonymParser;
+import org.elasticsearch.common.io.FastStringReader;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.env.Environment;
@@ -108,9 +109,11 @@ public class RemoteSynonymFile implements SynonymFile {
 							.lastIndexOf("=") + 1);
 				}
 				
-				reader = new InputStreamReader(response.getEntity().getContent(), charset);
+				//reader = new InputStreamReader(response.getEntity().getContent(), charset);
 				
-				/*
+				//Jason 放开这段代码，
+				//1.避免java.net.socketexception socket closed；
+				//2.打印远程近义词词库
 				br = new BufferedReader(new InputStreamReader(response
 						.getEntity().getContent(), charset));
 				StringBuffer sb = new StringBuffer("");
@@ -121,7 +124,7 @@ public class RemoteSynonymFile implements SynonymFile {
 							.append(System.getProperty("line.separator"));
 				}
 				reader = new FastStringReader(sb.toString());
-				*/
+				
 			}
 		} catch (IOException e) {
 			logger.error("get remote synonym reader {} error!", e, location);
